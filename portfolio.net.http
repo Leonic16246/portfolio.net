@@ -1,6 +1,7 @@
-@portfolio.net_HostAddress = http://localhost:5136
+@portfolio_net_HostAddress = http://localhost:5136
 
-GET {{portfolio.net_HostAddress}}/weatherforecast/
+GET {{portfolio_net_HostAddress}}/api/pc
 Accept: application/json
 
 ###
+GET {{portfolio_net_HostAddress}}/api/pc
