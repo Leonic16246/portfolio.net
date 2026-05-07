@@ -42,17 +42,16 @@ public class PcController : ControllerBase
         return Ok(dto);
     }
 
-
     // GET a single PC by ID
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(long id)
     {
         var result = await _supabase.From<Pc>()
-        .Where(pc => pc.PcId == id)
-        .Single();
+            .Where(pc => pc.PcId == id)
+            .Single();
 
         if (result == null) return NotFound();
-        
+
         var dto = new PcDto
         {
             PcId = result.PcId,
@@ -65,4 +64,25 @@ public class PcController : ControllerBase
         return Ok(dto);
     }
 
+    // PUT /api/pc/{id}
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Update(long id, [FromBody] PcDto dto)
+    {
+        var existing = await _supabase.From<Pc>()
+            .Where(pc => pc.PcId == id)
+            .Single();
+
+        if (existing == null) return NotFound();
+
+        existing.Name = dto.Name;
+        existing.Cpu = dto.Cpu;
+        existing.Gpu = dto.Gpu;
+        existing.Note = dto.Note;
+
+        await _supabase.From<Pc>()
+            .Where(pc => pc.PcId == id)
+            .Update(existing);
+
+        return Ok(dto);
+    }
 }
