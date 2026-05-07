@@ -11,23 +11,34 @@ public class PcController : ControllerBase
         _supabase = supabase;
     }
 
-    // GET entire PC table
+    // GET PC table
     [HttpGet]
-    public async Task<IActionResult> GetAll()
+    public async Task<IActionResult> GetAll([FromQuery] string? search)
     {
         var result = await _supabase.From<Pc>()
-        .Order(pc => pc.PcId, Supabase.Postgrest.Constants.Ordering.Ascending)
-        .Get();
+            .Order(pc => pc.PcId, Supabase.Postgrest.Constants.Ordering.Ascending)
+            .Get();
 
-        var dto = result.Models.Select(pc => new PcDto
-        {
-            PcId = pc.PcId,
-            UserId = pc.UserId,
-            Name = pc.Name,
-            Cpu = pc.Cpu,
-            Gpu = pc.Gpu,
-            Note = pc.Note
-        });
+        var keywords = string.IsNullOrEmpty(search)
+            ? Array.Empty<string>()
+            : search.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
+        var dto = result.Models
+            .Where(pc => keywords.Length == 0 || keywords.All(keyword =>
+                (pc.Name != null && pc.Name.Contains(keyword, StringComparison.OrdinalIgnoreCase)) ||
+                (pc.Cpu != null && pc.Cpu.Contains(keyword, StringComparison.OrdinalIgnoreCase)) ||
+                (pc.Gpu != null && pc.Gpu.Contains(keyword, StringComparison.OrdinalIgnoreCase)) ||
+                (pc.Note != null && pc.Note.Contains(keyword, StringComparison.OrdinalIgnoreCase))))
+            .Select(pc => new PcDto
+            {
+                PcId = pc.PcId,
+                UserId = pc.UserId,
+                Name = pc.Name,
+                Cpu = pc.Cpu,
+                Gpu = pc.Gpu,
+                Note = pc.Note
+            });
+
         return Ok(dto);
     }
 
@@ -53,4 +64,5 @@ public class PcController : ControllerBase
         };
         return Ok(dto);
     }
+
 }
