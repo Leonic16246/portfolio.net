@@ -6,7 +6,7 @@ name: Build and deploy ASP.Net Core app to Azure Web App - portfolio-net
 on:
   push:
     branches:
-      - main
+      - deploy
   workflow_dispatch:
 
 jobs:
