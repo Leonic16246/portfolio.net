@@ -42,7 +42,7 @@ public class PcController : ControllerBase
         return Ok(dto);
     }
 
-    // GET a single PC by ID
+    // GET /api/pc/{id}
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(long id)
     {
@@ -62,6 +62,13 @@ public class PcController : ControllerBase
             Note = result.Note
         };
         return Ok(dto);
+    }
+
+    // POST /api/pc
+    [HttpPost]
+    public IActionResult Create()
+    {
+        return Ok("hit");
     }
 
     // PUT /api/pc/{id}
@@ -84,5 +91,22 @@ public class PcController : ControllerBase
             .Update(existing);
 
         return Ok(dto);
+    }
+
+    // DELETE /api/pc/{id}
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(long id)
+    {
+        var existing = await _supabase.From<Pc>()
+            .Where(pc => pc.PcId == id)
+            .Single();
+
+        if (existing == null) return NotFound();
+
+        await _supabase.From<Pc>()
+            .Where(pc => pc.PcId == id)
+            .Delete();
+
+        return NoContent();
     }
 }

@@ -1,7 +1,38 @@
 @portfolio_net_HostAddress = http://localhost:5136
 
+// GET entire PC table
 GET {{portfolio_net_HostAddress}}/api/pc
 Accept: application/json
 
+// GET PC row with id 0
 ###
-GET {{portfolio_net_HostAddress}}/api/pc
+GET {{portfolio_net_HostAddress}}/api/pc/0
+
+###
+// POST create new PC
+POST {{portfolio_net_HostAddress}}/api/pc
+Content-Type: application/json
+
+{
+  "userId": "a1d9e2b3-fdc9-4e22-b439-42a33747d3c3",
+  "name": "Leonic1",
+  "cpu": "Ryzen 5 5600",
+  "gpu": "Geforce RTX 3060 12GB",
+  "note": "New entry"
+}
+
+###
+// PUT update PC with id 51
+PUT {{portfolio_net_HostAddress}}/api/pc/58
+Content-Type: application/json
+
+{
+  "name": "Leonic",
+  "cpu": "Ryzen 5 5600",
+  "gpu": "Geforce RTX 3060 12GB",
+  "note": "Updated notes"
+}
+
+###
+// DELETE PC with id 0
+DELETE {{portfolio_net_HostAddress}}/api/pc/58
